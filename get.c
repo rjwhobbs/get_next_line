@@ -84,7 +84,7 @@ int		main(void)
 	char 	*nline;
 	int 	fd;
 
-	fd = open("new_line.txt", O_RDONLY);
+	fd = open("war_and_peace.txt", O_RDONLY);
 	while (get(fd, &nline) == 1)
 	{
 		ft_putstr(nline);
