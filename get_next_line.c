@@ -20,7 +20,10 @@ int	get_next_line(const int fd, char **line)
 
 	*line = ft_strnew(0);
 	if (temp)
+	{
 		*line = ft_strrealloc(*line, temp);
+		ft_strdel(&temp);
+	}
 	if (last_line == 1)
 		return (0);
 	end = BUFF_SIZE;
@@ -39,6 +42,9 @@ int	get_next_line(const int fd, char **line)
 			return (1);
 	}
 	if (end != BUFF_SIZE)
+	{
 		last_line++;
+		return (0);
+	}
 	return (1);
 }
