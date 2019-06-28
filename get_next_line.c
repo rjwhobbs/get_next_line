@@ -9,6 +9,23 @@ char	*ft_strrealloc(char *s1, char *s2)
 	ft_strdel(&s1);
 	return (new);
 }
+int		temp_check(char **temp, char *nlp, char **line,char *del_temp)
+{
+	if (*temp)
+	{
+		nlp = ft_strchr(*temp, '\n');
+		if (nlp)
+		{
+			*nlp = '\0';
+			*line = ft_strrealloc(*line, *temp);
+			*temp = (nlp + 1);
+			return (1);
+		}
+		*line = ft_strrealloc(*line, *temp);
+		ft_strdel(&del_temp);
+	}
+	return (0);
+}
 
 int	get_next_line(const int fd, char **line)
 {
@@ -20,19 +37,8 @@ int	get_next_line(const int fd, char **line)
 	static char		*del_temp;
 
 	*line = ft_strnew(0);
-	if (temp)
-	{
-		nlp = ft_strchr(temp, '\n');
-		if (nlp)
-		{
-			*nlp = '\0';
-			*line = ft_strrealloc(*line, temp);
-			temp = (nlp + 1);
-			return (1);
-		}
-		*line = ft_strrealloc(*line, temp);
-		ft_strdel(&del_temp);
-	}
+	if (temp_check(&temp, nlp, line, del_temp))
+		return (1);
 	if (last_line == 1)
 		return (0);
 	end = BUFF_SIZE;
