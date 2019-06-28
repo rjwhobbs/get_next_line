@@ -6,7 +6,7 @@ char	*ft_strrealloc(char *s1, char *s2)
 	char *new;
 
 	new = ft_strjoin(s1, s2);
-	free(s1);
+	ft_strdel(&s1);
 	return (new);
 }
 
@@ -17,12 +17,21 @@ int	get_next_line(const int fd, char **line)
 	size_t			end;
 	char			*nlp;
 	static char		*temp;
+	static char		*del_temp;
 
 	*line = ft_strnew(0);
 	if (temp)
 	{
+		nlp = ft_strchr(temp, '\n');
+		if (nlp)
+		{
+			*nlp = '\0';
+			*line = ft_strrealloc(*line, temp);
+			temp = (nlp + 1);
+			return (1);
+		}
 		*line = ft_strrealloc(*line, temp);
-		ft_strdel(&temp);
+		ft_strdel(&del_temp);
 	}
 	if (last_line == 1)
 		return (0);
@@ -36,6 +45,7 @@ int	get_next_line(const int fd, char **line)
 		{
 			*nlp = '\0';
 			temp = ft_strdup(nlp + 1);
+			del_temp = temp;
 		}
 		*line = ft_strrealloc(*line, buff);
 		if (nlp)
