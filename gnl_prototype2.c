@@ -50,9 +50,7 @@ int		buff_rw(char **temp, char **line, char **del_temp, char **nlp, int fd)
 
 int	get_next_line(const int fd, char **line)
 {
-	//char 			buff[BUFF_SIZE + 1];
 	char			*nlp;
-	static int 		last_line;
 	int				end;
 	static char		*temp;
 	static char		*del_temp;
@@ -60,31 +58,14 @@ int	get_next_line(const int fd, char **line)
 	*line = ft_strnew(0);
 	if (temp_check(&temp, line, &del_temp))
 		return (1);
-	if (last_line == 1)
-		return (0);
 	end = BUFF_SIZE;
 	while (end == BUFF_SIZE)
 	{
 		end = buff_rw(&temp, line, &del_temp, &nlp, fd);
 		if (nlp)
 			return (1);
-	/*	end = read(fd, buff, BUFF_SIZE);
-		buff[end] = '\0';
-		nlp = ft_strchr(buff, '\n');
-		if (nlp)
-		{
-			*nlp = '\0';
-			temp = ft_strdup(nlp + 1);
-			del_temp = temp;
-		}
-		*line = ft_strrealloc(*line, buff);
-		if (nlp)
-			return (1);*/
 	}
 	if (end != BUFF_SIZE)
-	{
-		last_line++;
 		return (0);
-	}
 	return (1);
 }

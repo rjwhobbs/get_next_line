@@ -1,7 +1,18 @@
-#include "get_next_line.h"
-#include "libft.h"
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   get_next_line.c                                    :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: rhobbs <marvin@42.fr>                      +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2019/06/29 15:27:33 by rhobbs            #+#    #+#             */
+/*   Updated: 2019/06/29 15:28:26 by rhobbs           ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
 
-char	*ft_strrealloc(char *s1, char *s2)
+#include "get_next_line.h"
+
+char			*ft_strrealloc(char *s1, char *s2)
 {
 	char *new;
 
@@ -9,8 +20,12 @@ char	*ft_strrealloc(char *s1, char *s2)
 	ft_strdel(&s1);
 	return (new);
 }
-int		temp_check(char **temp, char *nlp, char **line,char *del_temp)
+
+static int		temp_check(char **temp, char **line, char *del_temp)
 {
+	char *nlp;
+
+	nlp = NULL;
 	if (*temp)
 	{
 		nlp = ft_strchr(*temp, '\n');
@@ -27,17 +42,17 @@ int		temp_check(char **temp, char *nlp, char **line,char *del_temp)
 	return (0);
 }
 
-int	get_next_line(const int fd, char **line)
+int				get_next_line(const int fd, char **line)
 {
-	char 			buff[BUFF_SIZE + 1];
-	static int 		last_line;
-	size_t			end;
+	char			buff[BUFF_SIZE + 1];
 	char			*nlp;
+	static int		last_line;
+	int				end;
 	static char		*temp;
 	static char		*del_temp;
 
 	*line = ft_strnew(0);
-	if (temp_check(&temp, nlp, line, del_temp))
+	if (temp_check(&temp, line, del_temp))
 		return (1);
 	if (last_line == 1)
 		return (0);
