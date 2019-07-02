@@ -1,6 +1,6 @@
 #include "get_next_line.h"
 
-char	*ft_strrealloc(char *s1, char *s2)
+static char	*ft_strrealloc(char *s1, char *s2)
 {
 	char *new;
 
@@ -9,7 +9,7 @@ char	*ft_strrealloc(char *s1, char *s2)
 	return (new);
 }
 
-static int		temp_check(char **temp, char **line, char **del_temp)
+static int	temp_check(char **temp, char **line, char **del_temp)
 {
 	char *nlp;
 
@@ -34,23 +34,23 @@ static int		temp_check(char **temp, char **line, char **del_temp)
 	return (0);
 }
 
-int		buff_rw(char **temp, char **line, char **del_temp, char **nlp, int fd)
+static int	buff_rw(t_gnl *gnl, char **line, int fd)
 {
-	char 		buff[BUFF_SIZE + 1];
-	int			end;
-	
+	char	buff[BUFF_SIZE + 1];
+	int		end;
+
 	end = read(fd, buff, BUFF_SIZE);
 	if (end < 0)
 		return (end);
 	buff[end] = '\0';
-	*nlp = ft_strchr(buff, '\n');
-	if (*nlp)
+	gnl->nlp = ft_strchr(buff, '\n');
+	if (gnl->nlp)
 	{
-		**nlp = '\0';
-		*temp = ft_strdup(*nlp + 1);
-		if (!*temp)
+		*gnl->nlp = '\0';
+		gnl->temp = ft_strdup(gnl->nlp + 1);
+		if (!gnl->temp)
 			return (-1);
-		*del_temp = *temp;
+		gnl->del_temp = gnl->temp;
 	}
 	*line = ft_strrealloc(*line, buff);
 	if (!*line)
@@ -58,30 +58,28 @@ int		buff_rw(char **temp, char **line, char **del_temp, char **nlp, int fd)
 	return (end);
 }
 
-int	get_next_line(const int fd, char **line)
+int			get_next_line(const int fd, char **line)
 {
-	char			*nlp;
+	static t_gnl	gnl;
 	int				end;
-	static char		*temp;
-	static char		*del_temp;
 
 	if (BUFF_SIZE < 1 || !line)
 		return (-1);
 	*line = ft_strnew(0);
 	if (!*line)
 		return (-1);
-	if (temp_check(&temp, line, &del_temp))
+	if (temp_check(&gnl.temp, line, &gnl.del_temp))
 		return (1);
 	end = BUFF_SIZE;
 	while (end == BUFF_SIZE)
 	{
-		end = buff_rw(&temp, line, &del_temp, &nlp, fd);
+		end = buff_rw(&gnl, line, fd);
 		if (end < 0)
 			return (-1);
-		if (nlp)
+		if (gnl.nlp)
 			return (1);
 	}
-	if (end != BUFF_SIZE)
+	if (end == 0)
 		return (0);
 	return (1);
 }

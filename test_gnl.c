@@ -1,4 +1,4 @@
-#include "libft.h"
+#include "./libft/libft.h"
 #include <fcntl.h>
 #include <sys/types.h>
 #include <sys/stat.h>
@@ -34,7 +34,7 @@ int		main(int ac, char **av)
 	while ((status = get_next_line(fd, &nline)) == 1)
 	{
 		ft_putendl("   Writing to output file...");
-		ft_putendl_fd(nline, fd2);
+		ft_putstr_fd(nline, fd2);
 		free(nline);
 	}
 	if (status == 0)
@@ -52,5 +52,7 @@ int		main(int ac, char **av)
 	close(fd);
 	close(fd2);
 	sleep(sec);
+	execlp("diff", "diff", av[1], av[2], NULL);
+	ft_putendl("If this prints out, then something went wrong!!");
 	return (0);
 }
